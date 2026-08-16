@@ -320,7 +320,7 @@ viterbi/{name}.viterbi.csv   posterior/{name}.posterior.csv
 <p>See <code>claude-itrails-ref.md</code> for the iTRAILS CLI, config format, and output file details, and <code>claude-gwf-ref.md</code> for gwf itself. ““”</p>
 <section id="imports" class="level2">
 <h2 class="anchored" data-anchor-id="imports">Imports</h2>
-<div id="fe5a5d93" class="cell" data-execution_count="1">
+<div id="b8892415" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> glob</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
@@ -334,7 +334,7 @@ viterbi/{name}.viterbi.csv   posterior/{name}.posterior.csv
 <section id="notebook-template" class="level2">
 <h2 class="anchored" data-anchor-id="notebook-template">Notebook template</h2>
 <p>Executes a notebook in place once the workflow outputs it depends on exist.</p>
-<div id="bdf5ecec" class="cell" data-execution_count="2">
+<div id="895a6901" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># task template function</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> run_notebook(path, dependencies, memory<span class="op">=</span><span class="st">'8g'</span>, walltime<span class="op">=</span><span class="st">'00:10:00'</span>, cores<span class="op">=</span><span class="dv">1</span>):</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
@@ -361,7 +361,7 @@ viterbi/{name}.viterbi.csv   posterior/{name}.posterior.csv
 <section id="workflow" class="level2">
 <h2 class="anchored" data-anchor-id="workflow">Workflow</h2>
 <p>The workflow is instantiated unconditionally so that gwf commands work even before <code>analyses.yml</code> is filled in; targets are only added when it exists.</p>
-<div id="db66129a" class="cell" data-execution_count="3">
+<div id="c95cf183" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>gwf <span class="op">=</span> Workflow(working_dir<span class="op">=</span>os.getcwd())</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>params_file <span class="op">=</span> Path(<span class="va">__file__</span>).parent <span class="op">/</span> <span class="st">'analyses.yml'</span></span>
