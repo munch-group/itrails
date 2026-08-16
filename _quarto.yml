@@ -1,11 +1,6 @@
 project:
   type: book
-  post-render: 
-    # - quarto render --profile slides
-    - quarto render slides/
-    - quarto render thesis/
-    - quarto render manuscript/
-    
+
 execute:
   freeze: auto
   echo: true
@@ -29,35 +24,39 @@ lightbox: true
 
 book:
   repo-url: "https://github.com/munch-group/itrails"
-  repo-actions: [edit, issue, source]  
-  title: "itrails"
-  author: "Joanna Doh"  
+  repo-actions: [edit, issue, source]
+  title: "iTRAILS workflow component"
+  author: "Kasper Munch"
   sidebar:
     collapse-level: 1
     search: true  
   chapters:
     - index.qmd
-    - part: "Thesis"
+    - part: "User guide"
       chapters:
-      # (the same files must be listed _quarto-slides.yml to render as slides)
-      - thesis/index.qmd 
-    - part: "Slides"
+      - docs/getting-started.qmd
+      - docs/input.qmd
+      - docs/configuration.qmd
+      - docs/windowing.qmd
+      - docs/outputs.qmd
+    - part: "Integration"
       chapters:
-      # (the same files must be listed _quarto-slides.yml to render as slides)
-      - slides/index.qmd 
+      - docs/submodule.qmd
+    - part: "Repository"
+      chapters:
+      - docs/website.qmd
     - part: "Notebooks"
-      chapters: 
+      chapters:
       - notebooks/example.ipynb
     - part: "Workflows"
-      chapters: 
+      chapters:
       - workflow.py
     # - part: "Reports"
     #   chapters: 
     #   - reports/example.qmd
     # - part: "Tables"
-    #   chapters: 
+    #   chapters:
     #   - tables/example.ipynb
-  downloads: [pdf]
-     
+
 bibliography: references.bib
 

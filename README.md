@@ -11,6 +11,8 @@ For each analysis the workflow chains three targets, each writing to its own sub
 
 The repository works both **standalone** and as a **git submodule** component of a larger gwf project. iTRAILS itself runs in an isolated pixi environment defined in `pixi.toml` (it pins numpy/scipy/numba), so nothing needs to be installed beyond pixi.
 
+📖 **Documentation:** [munch-group.github.io/itrails](https://munch-group.github.io/itrails/) — rendered from the `docs/` pages with Quarto and published on every push to `main`. Build it locally with `pixi run quarto render`.
+
 ## Standalone use
 
 The repo ships a 1 Mb simulated great-ape-like alignment (`data/simulated_alignment.maf`, made with msprime by `scripts/simulate_data.py`; regenerate with `pixi run simulate-example`), and `analyses.yml` points at it out of the box. To use the real great-ape alignment instead (183 MB, hg38/panTro5/gorGor5/ponAbe2), download it with `pixi run download-example` and set `maf: data/example_alignment.maf` in `analyses.yml`.
