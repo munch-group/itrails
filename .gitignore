@@ -144,3 +144,15 @@ pixi.lock
 
 .DS_Store
 
+
+**/*.quarto_ipynb
+
+# workflow outputs
+steps/
+results/
+
+# downloaded example data
+data/example_alignment.maf
+
+# notebook sentinels written by the workflow
+notebooks/.*.sentinel

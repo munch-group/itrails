@@ -28,9 +28,9 @@ comments:
 lightbox: true
 
 book:
-  repo-url: "https://github.com/munch-group/munch-group-project"
+  repo-url: "https://github.com/munch-group/itrails"
   repo-actions: [edit, issue, source]  
-  title: "munch-group-project"
+  title: "itrails"
   author: "Joanna Doh"  
   sidebar:
     collapse-level: 1
