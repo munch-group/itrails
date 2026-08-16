@@ -156,3 +156,6 @@ data/example_alignment.maf
 
 # notebook sentinels written by the workflow
 notebooks/.*.sentinel
+
+.gwf/
+_freeze/
