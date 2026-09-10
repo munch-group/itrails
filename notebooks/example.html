@@ -64,7 +64,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../site_libs/clipboard/clipboard.min.js"></script>
 <script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
@@ -83,6 +83,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../site_libs/bootstrap/bootstrap-4becb4071c2cc0dd9f0b509d0fb2f5d6.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -116,6 +119,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     document.body.classList.add('hypothesis-enabled');
   });
 </script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
 
 </head>
@@ -303,128 +309,186 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <p>Loads the outputs produced by the workflow (<code>gwf run</code> in the repository root) and gives a first look at each analysis: the fitted model parameters, the Viterbi segmentation of the alignment into gene-tree states, and the posterior state probabilities along the alignment.</p>
 <p>The notebook is executed by the workflow itself once all upstream targets are done, so it simply discovers whatever analyses exist under <code>steps/itrails/</code> (each analysis has one subfolder per step: <code>split/</code>, <code>optimize/</code>, <code>viterbi/</code>, <code>posterior/</code>, <code>concat/</code>).</p>
-<div id="cell-1" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-08-14T16:35:09.468188Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-08-14T16:35:09.468028Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-08-14T16:35:13.356120Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-08-14T16:35:13.355356Z&quot;}}">
+<div id="cell-1" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-09-09T13:26:53.654566Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-09-09T13:26:53.654286Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-09-09T13:26:57.084293Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-09-09T13:26:57.083802Z&quot;}}" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> yaml</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> IPython.display <span class="im">import</span> display, Markdown</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>sns.set_style(<span class="st">'whitegrid'</span>)</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>config InlineBackend.figure_formats <span class="op">=</span> [<span class="st">'retina'</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> IPython.display <span class="im">import</span> display, Markdown</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>Discover the analyses that have finished (the notebook runs with <code>notebooks/</code> as working directory, so results sit one level up):</p>
-<div id="cell-3" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-08-14T16:35:13.358474Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-08-14T16:35:13.358243Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-08-14T16:35:13.363445Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-08-14T16:35:13.362860Z&quot;}}">
+<div id="cell-2" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-09-09T13:26:57.086145Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-09-09T13:26:57.085994Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-09-09T13:26:57.089780Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-09-09T13:26:57.089432Z&quot;}}" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>steps_dir <span class="op">=</span> Path(<span class="st">'..'</span>) <span class="op">/</span> <span class="st">'steps'</span> <span class="op">/</span> <span class="st">'itrails'</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>analyses <span class="op">=</span> <span class="bu">sorted</span>(p <span class="cf">for</span> p <span class="kw">in</span> steps_dir.glob(<span class="st">'*'</span>) <span class="cf">if</span> p.is_dir()) <span class="cf">if</span> steps_dir.exists() <span class="cf">else</span> []</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="kw">not</span> analyses:</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">'No iTRAILS results found yet - run the workflow first (see the README).'</span>)</span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>[p.name <span class="cf">for</span> p <span class="kw">in</span> analyses]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="2">
+<pre><code>['example']</code></pre>
+</div>
 </div>
 <section id="fitted-model-parameters" class="level2">
 <h2 class="anchored" data-anchor-id="fitted-model-parameters">Fitted model parameters</h2>
 <p>The best parameter set found by <code>itrails-optimize</code> for each analysis (times in generations, <code>r</code> per site per generation):</p>
-<div id="cell-5" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-08-14T16:35:13.396326Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-08-14T16:35:13.396112Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-08-14T16:35:13.412324Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-08-14T16:35:13.411674Z&quot;}}">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> analysis <span class="kw">in</span> analyses:</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    name <span class="op">=</span> analysis.name</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    best_model <span class="op">=</span> analysis <span class="op">/</span> <span class="st">'optimize'</span> <span class="op">/</span> <span class="ss">f'</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">.best_model.yaml'</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> best_model.exists():</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        <span class="co"># fit: window mode has one best_model per window instead</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        window_models <span class="op">=</span> <span class="bu">sorted</span>((analysis <span class="op">/</span> <span class="st">'optimize'</span>).glob(<span class="st">'*.best_model.yaml'</span>))</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        display(Markdown(<span class="ss">f"### </span><span class="sc">{</span>name<span class="sc">}</span><span class="ch">\n</span><span class="sc">{</span><span class="bu">len</span>(window_models)<span class="sc">}</span><span class="ss"> per-window model fits "</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>                         <span class="ss">f"in `</span><span class="sc">{</span>analysis <span class="op">/</span> <span class="st">'optimize'</span><span class="sc">}</span><span class="ss">`"</span>))</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">continue</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(best_model) <span class="im">as</span> f:</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        best <span class="op">=</span> yaml.safe_load(f)</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    display(Markdown(<span class="ss">f"### </span><span class="sc">{</span>name<span class="sc">}</span><span class="ch">\n</span><span class="ss">"</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>                     <span class="ss">f"log likelihood: **</span><span class="sc">{</span>best[<span class="st">'results'</span>][<span class="st">'log_likelihood'</span>]<span class="sc">}</span><span class="ss">** "</span></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>                     <span class="ss">f"(iteration </span><span class="sc">{</span>best[<span class="st">'results'</span>][<span class="st">'iteration'</span>]<span class="sc">}</span><span class="ss">)"</span>))</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    display(pd.Series(best[<span class="st">'optimized_parameters'</span>], name<span class="op">=</span><span class="st">'estimate'</span>, dtype<span class="op">=</span><span class="bu">float</span>).to_frame())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-4" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-09-09T13:26:57.109918Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-09-09T13:26:57.109800Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-09-09T13:26:57.118065Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-09-09T13:26:57.117629Z&quot;}}" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> analysis <span class="kw">in</span> analyses:</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    name <span class="op">=</span> analysis.name</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    best_model <span class="op">=</span> analysis <span class="op">/</span> <span class="st">'optimize'</span> <span class="op">/</span> <span class="ss">f'</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">.best_model.yaml'</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> best_model.exists():</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>        <span class="co"># fit: window mode has one best_model per window instead</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        window_models <span class="op">=</span> <span class="bu">sorted</span>((analysis <span class="op">/</span> <span class="st">'optimize'</span>).glob(<span class="st">'*.best_model.yaml'</span>))</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>        display(Markdown(<span class="ss">f"### </span><span class="sc">{</span>name<span class="sc">}</span><span class="ch">\n</span><span class="sc">{</span><span class="bu">len</span>(window_models)<span class="sc">}</span><span class="ss"> per-window model fits "</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>                         <span class="ss">f"in `</span><span class="sc">{</span>analysis <span class="op">/</span> <span class="st">'optimize'</span><span class="sc">}</span><span class="ss">`"</span>))</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">continue</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(best_model) <span class="im">as</span> f:</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>        best <span class="op">=</span> yaml.safe_load(f)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    display(Markdown(<span class="ss">f"### </span><span class="sc">{</span>name<span class="sc">}</span><span class="ch">\n</span><span class="ss">"</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>                     <span class="ss">f"log likelihood: **</span><span class="sc">{</span>best[<span class="st">'results'</span>][<span class="st">'log_likelihood'</span>]<span class="sc">}</span><span class="ss">** "</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>                     <span class="ss">f"(iteration </span><span class="sc">{</span>best[<span class="st">'results'</span>][<span class="st">'iteration'</span>]<span class="sc">}</span><span class="ss">)"</span>))</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    display(pd.Series(best[<span class="st">'optimized_parameters'</span>], name<span class="op">=</span><span class="st">'estimate'</span>, dtype<span class="op">=</span><span class="bu">float</span>).to_frame())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="example" class="level3 cell-output cell-output-display cell-output-markdown">
+<h3 class="anchored" data-anchor-id="example">example</h3>
+<p>log likelihood: <strong>-1694588.894203797</strong> (iteration 152)</p>
+</section>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">estimate</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">N_AB</th>
+<td>5.300800e+04</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">N_ABC</th>
+<td>1.044956e+05</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">r</th>
+<td>2.634070e-09</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">t_1</th>
+<td>2.859235e+05</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">t_2</th>
+<td>2.923413e+04</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">t_upper</th>
+<td>2.681633e+05</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
 </div>
 </section>
 <section id="viterbi-decoding" class="level2">
 <h2 class="anchored" data-anchor-id="viterbi-decoding">Viterbi decoding</h2>
 <p>How much of the alignment is assigned to each hidden state (a gene-tree topology combined with coalescence-time intervals), and the state sequence along the genome (windowed analyses, using <code>concat/{name}.viterbi.csv</code>) or along the largest alignment block (unwindowed analyses):</p>
-<div id="cell-7" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-08-14T16:35:13.414300Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-08-14T16:35:13.414130Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-08-14T16:35:13.762888Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-08-14T16:35:13.761957Z&quot;}}">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> analysis <span class="kw">in</span> analyses:</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    name <span class="op">=</span> analysis.name</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    windowed <span class="op">=</span> (analysis <span class="op">/</span> <span class="st">'concat'</span> <span class="op">/</span> <span class="ss">f'</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">.viterbi.csv'</span>).exists()</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> windowed:</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>        <span class="co"># concatenated per-window decode; block_start + block-local position</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        <span class="co"># places each segment on the binning-reference genome</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>        vit <span class="op">=</span> pd.read_csv(analysis <span class="op">/</span> <span class="st">'concat'</span> <span class="op">/</span> <span class="ss">f'</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">.viterbi.csv'</span>)</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>        vit[<span class="st">'genome_start'</span>] <span class="op">=</span> vit[<span class="st">'block_start'</span>] <span class="op">+</span> vit[<span class="st">'position_start'</span>]</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        vit[<span class="st">'genome_end'</span>] <span class="op">=</span> vit[<span class="st">'block_start'</span>] <span class="op">+</span> vit[<span class="st">'position_end'</span>]</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>        <span class="co"># under fit: genome every window has the same state legend</span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>        states_file <span class="op">=</span> <span class="bu">sorted</span>((analysis <span class="op">/</span> <span class="st">'viterbi'</span>).glob(<span class="st">'*.hidden_states.csv'</span>))[<span class="dv">0</span>]</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>        vit <span class="op">=</span> pd.read_csv(analysis <span class="op">/</span> <span class="st">'viterbi'</span> <span class="op">/</span> <span class="ss">f'</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">.viterbi.csv'</span>)</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>        states_file <span class="op">=</span> analysis <span class="op">/</span> <span class="st">'viterbi'</span> <span class="op">/</span> <span class="ss">f'</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">.hidden_states.csv'</span></span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    states <span class="op">=</span> pd.read_csv(states_file)</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    labels <span class="op">=</span> states.set_index(<span class="st">'state_idx'</span>)[<span class="st">'shorthand_name'</span>]</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    vit[<span class="st">'length'</span>] <span class="op">=</span> vit[<span class="st">'position_end'</span>] <span class="op">-</span> vit[<span class="st">'position_start'</span>] <span class="op">+</span> <span class="dv">1</span></span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    bp_per_state <span class="op">=</span> (vit.groupby(<span class="st">'most_likely_state'</span>)[<span class="st">'length'</span>].<span class="bu">sum</span>()</span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>                       .rename(index<span class="op">=</span>labels).sort_values())</span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>    fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">4</span>))</span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>    bp_per_state.plot.barh(ax<span class="op">=</span>axes[<span class="dv">0</span>], color<span class="op">=</span><span class="st">'C0'</span>)</span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>    axes[<span class="dv">0</span>].set_xlabel(<span class="st">'bases assigned'</span>)</span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>    axes[<span class="dv">0</span>].set_ylabel(<span class="st">'hidden state'</span>)</span>
-<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> windowed:</span>
-<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> seg <span class="kw">in</span> vit.itertuples():</span>
-<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>            axes[<span class="dv">1</span>].hlines(seg.most_likely_state, seg.genome_start, seg.genome_end,</span>
-<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>                           lw<span class="op">=</span><span class="dv">3</span>, color<span class="op">=</span><span class="st">'C0'</span>)</span>
-<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>        axes[<span class="dv">1</span>].set_xlabel(<span class="ss">f"position on </span><span class="sc">{</span>vit[<span class="st">'chrom'</span>]<span class="sc">.</span>iloc[<span class="dv">0</span>]<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
-<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>        largest_block <span class="op">=</span> vit.groupby(<span class="st">'Block_idx'</span>)[<span class="st">'length'</span>].<span class="bu">sum</span>().idxmax()</span>
-<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>        block <span class="op">=</span> vit[vit[<span class="st">'Block_idx'</span>] <span class="op">==</span> largest_block]</span>
-<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> seg <span class="kw">in</span> block.itertuples():</span>
-<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>            axes[<span class="dv">1</span>].hlines(seg.most_likely_state, seg.position_start, seg.position_end,</span>
-<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>                           lw<span class="op">=</span><span class="dv">3</span>, color<span class="op">=</span><span class="st">'C0'</span>)</span>
-<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>        axes[<span class="dv">1</span>].set_xlabel(<span class="ss">f'position in block </span><span class="sc">{</span>largest_block<span class="sc">}</span><span class="ss">'</span>)</span>
-<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>    axes[<span class="dv">1</span>].set_ylabel(<span class="st">'state index'</span>)</span>
-<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>    fig.suptitle(<span class="ss">f'</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">: Viterbi decoding'</span>)</span>
-<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>    fig.tight_layout()</span>
-<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>    plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-6" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-09-09T13:26:57.119497Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-09-09T13:26:57.119412Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-09-09T13:26:57.391398Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-09-09T13:26:57.390981Z&quot;}}">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> analysis <span class="kw">in</span> analyses:</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    name <span class="op">=</span> analysis.name</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    windowed <span class="op">=</span> (analysis <span class="op">/</span> <span class="st">'concat'</span> <span class="op">/</span> <span class="ss">f'</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">.viterbi.csv'</span>).exists()</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> windowed:</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        <span class="co"># concatenated per-window decode; block_start + block-local position</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        <span class="co"># places each segment on the binning-reference genome</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        vit <span class="op">=</span> pd.read_csv(analysis <span class="op">/</span> <span class="st">'concat'</span> <span class="op">/</span> <span class="ss">f'</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">.viterbi.csv'</span>)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        vit[<span class="st">'genome_start'</span>] <span class="op">=</span> vit[<span class="st">'block_start'</span>] <span class="op">+</span> vit[<span class="st">'position_start'</span>]</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>        vit[<span class="st">'genome_end'</span>] <span class="op">=</span> vit[<span class="st">'block_start'</span>] <span class="op">+</span> vit[<span class="st">'position_end'</span>]</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        <span class="co"># under fit: genome every window has the same state legend</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>        states_file <span class="op">=</span> <span class="bu">sorted</span>((analysis <span class="op">/</span> <span class="st">'viterbi'</span>).glob(<span class="st">'*.hidden_states.csv'</span>))[<span class="dv">0</span>]</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>        vit <span class="op">=</span> pd.read_csv(analysis <span class="op">/</span> <span class="st">'viterbi'</span> <span class="op">/</span> <span class="ss">f'</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">.viterbi.csv'</span>)</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>        states_file <span class="op">=</span> analysis <span class="op">/</span> <span class="st">'viterbi'</span> <span class="op">/</span> <span class="ss">f'</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">.hidden_states.csv'</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    states <span class="op">=</span> pd.read_csv(states_file)</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    labels <span class="op">=</span> states.set_index(<span class="st">'state_idx'</span>)[<span class="st">'shorthand_name'</span>]</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    vit[<span class="st">'length'</span>] <span class="op">=</span> vit[<span class="st">'position_end'</span>] <span class="op">-</span> vit[<span class="st">'position_start'</span>] <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    bp_per_state <span class="op">=</span> (vit.groupby(<span class="st">'most_likely_state'</span>)[<span class="st">'length'</span>].<span class="bu">sum</span>()</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>                       .rename(index<span class="op">=</span>labels).sort_values())</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">4</span>))</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>    bp_per_state.plot.barh(ax<span class="op">=</span>axes[<span class="dv">0</span>], color<span class="op">=</span><span class="st">'C0'</span>)</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>    axes[<span class="dv">0</span>].set_xlabel(<span class="st">'bases assigned'</span>)</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>    axes[<span class="dv">0</span>].set_ylabel(<span class="st">'hidden state'</span>)</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> windowed:</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> seg <span class="kw">in</span> vit.itertuples():</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>            axes[<span class="dv">1</span>].hlines(seg.most_likely_state, seg.genome_start, seg.genome_end,</span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>                           lw<span class="op">=</span><span class="dv">3</span>, color<span class="op">=</span><span class="st">'C0'</span>)</span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>        axes[<span class="dv">1</span>].set_xlabel(<span class="ss">f"position on </span><span class="sc">{</span>vit[<span class="st">'chrom'</span>]<span class="sc">.</span>iloc[<span class="dv">0</span>]<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>        largest_block <span class="op">=</span> vit.groupby(<span class="st">'Block_idx'</span>)[<span class="st">'length'</span>].<span class="bu">sum</span>().idxmax()</span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>        block <span class="op">=</span> vit[vit[<span class="st">'Block_idx'</span>] <span class="op">==</span> largest_block]</span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> seg <span class="kw">in</span> block.itertuples():</span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>            axes[<span class="dv">1</span>].hlines(seg.most_likely_state, seg.position_start, seg.position_end,</span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>                           lw<span class="op">=</span><span class="dv">3</span>, color<span class="op">=</span><span class="st">'C0'</span>)</span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>        axes[<span class="dv">1</span>].set_xlabel(<span class="ss">f'position in block </span><span class="sc">{</span>largest_block<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a>    axes[<span class="dv">1</span>].set_ylabel(<span class="st">'state index'</span>)</span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>    fig.suptitle(<span class="ss">f'</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">: Viterbi decoding'</span>)</span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a>    fig.tight_layout()</span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a>    plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="example_files/figure-html/cell-5-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="example_files/figure-html/cell-5-output-1.png" class="img-fluid figure-img"></a></p>
+</figure>
+</div>
+</div>
 </div>
 </section>
 <section id="posterior-decoding" class="level2">
 <h2 class="anchored" data-anchor-id="posterior-decoding">Posterior decoding</h2>
 <p>Posterior probability of every hidden state along the genome (windowed analyses, using <code>concat/{name}.posterior.csv</code>) or along the largest alignment block (unwindowed analyses). Positions are subsampled for plotting when the sequence is long:</p>
-<div id="cell-9" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-08-14T16:35:13.765403Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-08-14T16:35:13.765219Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-08-14T16:35:19.584197Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-08-14T16:35:19.583192Z&quot;}}">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> analysis <span class="kw">in</span> analyses:</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    name <span class="op">=</span> analysis.name</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    windowed <span class="op">=</span> (analysis <span class="op">/</span> <span class="st">'concat'</span> <span class="op">/</span> <span class="ss">f'</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">.posterior.csv'</span>).exists()</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> windowed:</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        post <span class="op">=</span> pd.read_csv(analysis <span class="op">/</span> <span class="st">'concat'</span> <span class="op">/</span> <span class="ss">f'</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">.posterior.csv'</span>)</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        prob_cols <span class="op">=</span> [c <span class="cf">for</span> c <span class="kw">in</span> post.columns <span class="cf">if</span> c.startswith(<span class="st">'prob_state_'</span>)]</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        post[<span class="st">'genome_pos'</span>] <span class="op">=</span> post[<span class="st">'block_start'</span>] <span class="op">+</span> post[<span class="st">'position_idx'</span>]</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        post <span class="op">=</span> post.sort_values(<span class="st">'genome_pos'</span>)</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>        probs <span class="op">=</span> post[prob_cols].to_numpy().T</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        xlabel <span class="op">=</span> <span class="ss">f"position on </span><span class="sc">{</span>post[<span class="st">'chrom'</span>]<span class="sc">.</span>iloc[<span class="dv">0</span>]<span class="sc">}</span><span class="ss">"</span></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>        post <span class="op">=</span> pd.read_csv(analysis <span class="op">/</span> <span class="st">'posterior'</span> <span class="op">/</span> <span class="ss">f'</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">.posterior.csv'</span>)</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>        prob_cols <span class="op">=</span> [c <span class="cf">for</span> c <span class="kw">in</span> post.columns <span class="cf">if</span> c.startswith(<span class="st">'prob_state_'</span>)]</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>        block_col <span class="op">=</span> post.columns[<span class="dv">0</span>]</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>        largest_block <span class="op">=</span> post[block_col].value_counts().idxmax()</span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>        probs <span class="op">=</span> post[post[block_col] <span class="op">==</span> largest_block][prob_cols].to_numpy().T</span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>        xlabel <span class="op">=</span> <span class="ss">f'position in block </span><span class="sc">{</span>largest_block<span class="sc">}</span><span class="ss">'</span></span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    step <span class="op">=</span> <span class="bu">max</span>(<span class="dv">1</span>, probs.shape[<span class="dv">1</span>] <span class="op">//</span> <span class="dv">2000</span>)</span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    plt.figure(figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">4</span>))</span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    plt.imshow(probs[:, ::step], aspect<span class="op">=</span><span class="st">'auto'</span>, origin<span class="op">=</span><span class="st">'lower'</span>,</span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>               cmap<span class="op">=</span><span class="st">'viridis'</span>, vmin<span class="op">=</span><span class="dv">0</span>, vmax<span class="op">=</span><span class="dv">1</span>, interpolation<span class="op">=</span><span class="st">'nearest'</span>)</span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>    plt.colorbar(label<span class="op">=</span><span class="st">'posterior probability'</span>)</span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>    plt.xlabel(xlabel <span class="op">+</span> (<span class="ss">f' (every </span><span class="sc">{</span>step<span class="sc">}</span><span class="ss"> bp)'</span> <span class="cf">if</span> step <span class="op">&gt;</span> <span class="dv">1</span> <span class="cf">else</span> <span class="st">''</span>))</span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>    plt.ylabel(<span class="st">'state index'</span>)</span>
-<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>    plt.title(<span class="ss">f'</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">: posterior decoding'</span>)</span>
-<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>    plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-8" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-09-09T13:26:57.392882Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-09-09T13:26:57.392793Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-09-09T13:27:00.728484Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-09-09T13:27:00.728072Z&quot;}}" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> analysis <span class="kw">in</span> analyses:</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    name <span class="op">=</span> analysis.name</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    windowed <span class="op">=</span> (analysis <span class="op">/</span> <span class="st">'concat'</span> <span class="op">/</span> <span class="ss">f'</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">.posterior.csv'</span>).exists()</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> windowed:</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>        post <span class="op">=</span> pd.read_csv(analysis <span class="op">/</span> <span class="st">'concat'</span> <span class="op">/</span> <span class="ss">f'</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">.posterior.csv'</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>        prob_cols <span class="op">=</span> [c <span class="cf">for</span> c <span class="kw">in</span> post.columns <span class="cf">if</span> c.startswith(<span class="st">'prob_state_'</span>)]</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>        post[<span class="st">'genome_pos'</span>] <span class="op">=</span> post[<span class="st">'block_start'</span>] <span class="op">+</span> post[<span class="st">'position_idx'</span>]</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>        post <span class="op">=</span> post.sort_values(<span class="st">'genome_pos'</span>)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>        probs <span class="op">=</span> post[prob_cols].to_numpy().T</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>        xlabel <span class="op">=</span> <span class="ss">f"position on </span><span class="sc">{</span>post[<span class="st">'chrom'</span>]<span class="sc">.</span>iloc[<span class="dv">0</span>]<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>        post <span class="op">=</span> pd.read_csv(analysis <span class="op">/</span> <span class="st">'posterior'</span> <span class="op">/</span> <span class="ss">f'</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">.posterior.csv'</span>)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>        prob_cols <span class="op">=</span> [c <span class="cf">for</span> c <span class="kw">in</span> post.columns <span class="cf">if</span> c.startswith(<span class="st">'prob_state_'</span>)]</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>        block_col <span class="op">=</span> post.columns[<span class="dv">0</span>]</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>        largest_block <span class="op">=</span> post[block_col].value_counts().idxmax()</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>        probs <span class="op">=</span> post[post[block_col] <span class="op">==</span> largest_block][prob_cols].to_numpy().T</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>        xlabel <span class="op">=</span> <span class="ss">f'position in block </span><span class="sc">{</span>largest_block<span class="sc">}</span><span class="ss">'</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    step <span class="op">=</span> <span class="bu">max</span>(<span class="dv">1</span>, probs.shape[<span class="dv">1</span>] <span class="op">//</span> <span class="dv">2000</span>)</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    plt.figure(figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">4</span>))</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    plt.imshow(probs[:, ::step], aspect<span class="op">=</span><span class="st">'auto'</span>, origin<span class="op">=</span><span class="st">'lower'</span>,</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>               cmap<span class="op">=</span><span class="st">'viridis'</span>, vmin<span class="op">=</span><span class="dv">0</span>, vmax<span class="op">=</span><span class="dv">1</span>, interpolation<span class="op">=</span><span class="st">'nearest'</span>)</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>    plt.colorbar(label<span class="op">=</span><span class="st">'posterior probability'</span>)</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>    plt.xlabel(xlabel <span class="op">+</span> (<span class="ss">f' (every </span><span class="sc">{</span>step<span class="sc">}</span><span class="ss"> bp)'</span> <span class="cf">if</span> step <span class="op">&gt;</span> <span class="dv">1</span> <span class="cf">else</span> <span class="st">''</span>))</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>    plt.ylabel(<span class="st">'state index'</span>)</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>    plt.title(<span class="ss">f'</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">: posterior decoding'</span>)</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>    plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="example_files/figure-html/cell-6-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="example_files/figure-html/cell-6-output-1.png" class="img-fluid figure-img"></a></p>
+</figure>
+</div>
+</div>
 </div>
 
 
@@ -844,8 +908,40 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
 </nav>
 </div> <!-- /content -->
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.dev/munch-group/itrails/blob/main/notebooks/example.ipynb" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/munch-group/itrails/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/munch-group/itrails/blob/main/notebooks/example.ipynb" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></div></div></footer><script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
 
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.dev/munch-group/itrails/blob/main/notebooks/example.ipynb" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/munch-group/itrails/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/munch-group/itrails/blob/main/notebooks/example.ipynb" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></div></div></footer></body></html>
+</body></html>
