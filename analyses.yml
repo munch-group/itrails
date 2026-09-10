@@ -16,7 +16,7 @@ analyses:
     # alignment, run `pixi run download-example` and use
     # data/example_alignment.maf instead.
     maf: data/simulated_alignment.maf
-    config: config/example_config.yaml
+    config: config/example.yaml
     # windowed mode: the model is fitted once on the full alignment
     # (fit: genome, the default), each 500 kb window is decoded as its own
     # job, and the results are concatenated into concat/example.viterbi.csv
@@ -49,3 +49,12 @@ analyses:
   #   # regions: [chr1, chr2]         # default: all contigs
   #   # haplotype: 1                  # 1-based haplotype to extract
   #   # mask_uncovered: true          # false for plain (non-g)VCFs (needs fasta)
+
+
+  - name: alternative
+    maf: data/simulated_alignment.maf
+    config: config/alternative.yaml
+    window_size: 500000
+    fit: window
+    species: [hg38, panTro5, gorGor5, ponAbe2]  # drop blocks missing these
+    # optimize_options: {cores: 64, memory: 128g, walltime: 48:00:00}

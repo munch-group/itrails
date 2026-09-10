@@ -21,7 +21,7 @@ settings:
   # the keys must be present but may be left empty
   input_maf:
   output_prefix:
-  n_cpu: 16             # capped at the Slurm allocation by itrails itself
+  n_cpu: 10             # capped at the Slurm allocation by itrails itself
   method: "Nelder-Mead" # or "L-BFGS-B"
   species_list: ["hg38", "panTro5", "gorGor5", "ponAbe2"]
   n_int_AB: 3
