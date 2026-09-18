@@ -30,6 +30,14 @@ analyses:
     #                                  # first species line of each MAF block)
     # optimize_options: {cores: 64, memory: 128g, walltime: 48:00:00}
 
+  # - name: alternative
+  #   maf: data/simulated_alignment.maf
+  #   config: config/alternative.yaml
+  #   window_size: 500000
+  #   fit: window
+  #   species: [hg38, panTro5, gorGor5, ponAbe2]  # drop blocks missing these
+  #   # optimize_options: {cores: 64, memory: 128g, walltime: 48:00:00}
+
   # Instead of a MAF, an analysis can start from phased (g)VCFs called
   # against a shared reference (e.g. baboon samples mapped to macaque);
   # an alignment/ step builds the MAF from the first haplotype of each
@@ -51,10 +59,3 @@ analyses:
   #   # mask_uncovered: true          # false for plain (non-g)VCFs (needs fasta)
 
 
-  # - name: alternative
-  #   maf: data/simulated_alignment.maf
-  #   config: config/alternative.yaml
-  #   window_size: 500000
-  #   fit: window
-  #   species: [hg38, panTro5, gorGor5, ponAbe2]  # drop blocks missing these
-  #   # optimize_options: {cores: 64, memory: 128g, walltime: 48:00:00}
