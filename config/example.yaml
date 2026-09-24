@@ -6,15 +6,15 @@
 # See claude-itrails-ref.md for parameter meanings and combination rules.
 
 fixed_parameters:
-  mu: 2e-8              # mutation rate; must always be fixed
+  mu: 1.2e-8              # mutation rate; must always be fixed
 
 optimized_parameters:   # each entry: [starting, min, max]
   N_AB:    [50000, 5000, 500000]
   N_ABC:   [50000, 5000, 500000]
   t_1:     [240000, 24000, 2400000]
   t_2:     [40000, 4000, 400000]
-  t_upper: [745069.3855, 74506.9385, 7450693.8556]
-  r:       [1e-8, 1e-9, 1e-7]
+  t_upper: [750000, 75000, 7500000]  
+  r:       [1e-9, 0.5e-9, 2e-9]
 
 settings:
   # input/output are supplied on the command line by the workflow;

@@ -8,4 +8,4 @@ For a compact local reference to the GWF API, CLI, and common patterns used here
 
 ## iTRAILS
 
-The pipeline runs [iTRAILS](https://itrails.readthedocs.io/en/docs-stable/) (TRAILS coalescent HMM). For a local reference to its CLI, config format, model parameters, and exact output file names, see [`claude-itrails-ref.md`](./claude-itrails-ref.md). Consult it before touching the templates in `itrails_workflow.py`. iTRAILS runs in the isolated pixi environment `itrails` (see `pixi.toml`); specs invoke it as `pixi run -e itrails itrails-...`.
+The pipeline runs [iTRAILS](https://itrails.readthedocs.io/en/docs-stable/) (TRAILS coalescent HMM). For a local reference to its CLI, config format, model parameters, and exact output file names, see [`claude-itrails-ref.md`](./claude-itrails-ref.md). Consult it before touching the templates in `itrails_workflow.py`. iTRAILS runs in the isolated pixi environment `itrails-tool` (see `pixi.toml`); specs invoke it as `pixi run -e itrails-tool itrails-...`.

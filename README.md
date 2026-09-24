@@ -65,7 +65,7 @@ gwf, itrails_targets = itrails_workflow(
 
 Paths are resolved relative to where `gwf run` is invoked (the parent project root). Resource options can be overridden globally (`optimize_options={'cores': 64, 'memory': '128g'}`) or per analysis (an `optimize_options` key in the analysis dict); the same goes for `viterbi_options` and `posterior_options`.
 
-By default each target runs its command inside this repo's pixi `itrails` environment (`pixi run -e itrails ...` with the submodule's manifest), which works on both the local and slurm backends. Pass `run_prefix=...` to use another environment instead.
+By default each target runs its command inside this repo's pixi `itrails-tool` environment (`pixi run -e itrails-tool ...` with the submodule's manifest), which works on both the local and slurm backends. Pass `run_prefix=...` to use another environment instead.
 
 ## Windowed analyses
 

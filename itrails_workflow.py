@@ -63,6 +63,7 @@ import importlib.util
 import json
 import os
 import re
+import shutil
 from collections import defaultdict
 from pathlib import Path
 
@@ -96,13 +97,34 @@ def _split_maf_module():
     return _script_module('split_maf')
 
 
+def pixi_executable():
+    """
+    Absolute path to the pixi binary, resolved when the workflow is defined.
+
+    Job scripts cannot rely on a bare `pixi`: in an interactive shell pixi
+    may only exist as a shell function (the `pixi shell-hook`), and Slurm
+    jobs inherit the environment but not shell functions -- and the hook's
+    PATH need not contain the binary. Look at PATH, then the PIXI_EXE
+    variable the hook exports, then the default install location.
+    """
+    found = shutil.which('pixi')
+    if found:
+        return found
+    for candidate in (os.environ.get('PIXI_EXE'),
+                      Path.home() / '.pixi' / 'bin' / 'pixi'):
+        if candidate and os.access(candidate, os.X_OK):
+            return str(candidate)
+    return 'pixi'
+
+
 def default_run_prefix():
     """
     Command prefix that runs the rest of a command line inside this
-    repository's pixi `itrails` environment (works on both the local and
+    repository's pixi `itrails-tool` environment (works on both the local and
     slurm backends, unlike gwf executors which are slurm-only).
     """
-    return f"pixi run --manifest-path {COMPONENT_DIR / 'pixi.toml'} -e itrails"
+    return (f"{pixi_executable()} run "
+            f"--manifest-path {COMPONENT_DIR / 'pixi.toml'} -e itrails-tool")
 
 
 def _read_fai(fai_path):
@@ -417,7 +439,7 @@ def itrails_workflow(gwf=None, analyses=None, output_dir='steps/itrails',
         Slurm account added to every target's options.
     run_prefix :
         Command prefix putting the itrails executables on PATH. Defaults to
-        running inside this repository's pixi `itrails` environment; a parent
+        running inside this repository's pixi `itrails-tool` environment; a parent
         using its own environment can pass e.g.
         'eval "$(conda shell.bash activate itrails)" &&'-style prefix or ''.
     window_size :
